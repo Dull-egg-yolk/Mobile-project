@@ -86,6 +86,8 @@ export default {
         console.log('登录成功', res)
         // 固定语法  跟this.$message 一样
         this.$toast.success('登录成功')
+        // 跳到首页
+        this.$router.push('/')
       } catch (err) {
         console.log('登录失败', err)
         this.$toast.fail('登录失败')

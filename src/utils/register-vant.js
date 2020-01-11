@@ -1,6 +1,20 @@
 import Vue from 'vue'
 // 注册vant
-import { Button, Cell, CellGroup, Icon, NavBar, Field, Toast, CountDown, Tabbar, TabbarItem } from 'vant'
+import { Button,
+  Cell,
+  CellGroup,
+  Icon,
+  NavBar,
+  Field,
+  Toast,
+  CountDown,
+  Tabbar,
+  TabbarItem,
+  Image,
+  Grid,
+  GridItem,
+  Dialog
+} from 'vant'
 
 Vue.use(Button)
   .use(Cell)
@@ -12,3 +26,7 @@ Vue.use(Button)
   .use(CountDown)
   .use(Tabbar)
   .use(TabbarItem)
+  .use(Image)
+  .use(Grid)
+  .use(GridItem)
+  .use(Dialog)

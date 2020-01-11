@@ -23,7 +23,7 @@ const routes = [
         component: () => import('../views/video')
       },
       {
-        path: '/home',
+        path: '/',
         component: () => import('../views/home')
       },
       {
@@ -32,6 +32,11 @@ const routes = [
       }
 
     ]
+  },
+  // 用户页面
+  {
+    path: '/user/:userId',
+    component: () => import('../views/user')
   }
 
 ]
