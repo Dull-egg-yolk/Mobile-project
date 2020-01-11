@@ -23,7 +23,7 @@ const routes = [
         component: () => import('../views/video')
       },
       {
-        path: '/',
+        path: '/home',
         component: () => import('../views/home')
       },
       {

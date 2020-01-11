@@ -25,6 +25,8 @@ request.interceptors.request.use(function (config) {
 
   // 统一添加 token
   if (user) {
+    console.log(user)
+
     // config.headers 获取操作请求头对象
     // Authorization 是后端要求的字段名称
     // 数据值后端要求提供：Bearer token数据
