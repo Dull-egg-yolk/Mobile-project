@@ -8,6 +8,8 @@ import './utils/register-vant'
 import 'amfe-flexible'
 // 引入全局css
 import './styles/index.less'
+// 引入校验规则
+import './utils/validation.js'
 Vue.config.productionTip = false
 
 new Vue({

@@ -12,7 +12,7 @@ export const login = data => {
 // 发送短信验证码
 export const sendSmsCode = mobile => {
   return request({
-    url: `/v1_0/sms/codes/${mobile}`,
-    method: 'GET'
+    url: `/v1_0/sms/codes/${mobile}`
+    // method: 'GET'
   })
 }
