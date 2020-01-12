@@ -7,12 +7,12 @@
     <!-- name提示名称 rules校验规则 v-slot="{errors}" 校验失败的错误提示信息-->
     <ValidationObserver ref="myform">
       <van-cell-group>
-        <ValidationProvider name="手机号" rules="required" immediate>
+        <ValidationProvider name="手机号" rules="required|mobile" immediate>
           <van-field label="手机号" v-model="formData.mobile" placeholder="请输入手机号">
             <i class="iconfont icon-shouji" slot="left-icon"></i>
           </van-field>
         </ValidationProvider>
-        <ValidationProvider name="验证码" rules="required" immediate>
+        <ValidationProvider name="验证码" rules="required|code" immediate>
           <van-field v-model="formData.code" type="password" label="验证码" placeholder="请输入验证码">
             <i class="iconfont icon-yanzhengma" slot="left-icon"></i>
             <van-count-down slot="button" :time="time" format="ss 秒" v-if="isCountDownShow" @finish="isCountDownShow = false"/>
@@ -34,6 +34,7 @@
 import { login, sendSmsCode } from '../../api/user'
 // 引入validate
 import { validate } from 'vee-validate'
+// import validation from '../../utils/validation'
 export default {
   data () {
     return {
@@ -87,7 +88,7 @@ export default {
         // 固定语法  跟this.$message 一样
         this.$toast.success('登录成功')
         // 跳到首页
-        this.$router.push('/')
+        this.$router.push('/home')
       } catch (err) {
         console.log('登录失败', err)
         this.$toast.fail('登录失败')
