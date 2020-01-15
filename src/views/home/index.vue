@@ -1,7 +1,9 @@
 <template>
   <div>
     <!-- 导航 -->
-    <van-nav-bar title="首页" fixed />
+    <van-nav-bar title="首页" fixed >
+
+    </van-nav-bar>
     <van-tabs v-model="active">
       <!-- 面包插槽 -->
       <van-icon class="wap-nav" slot="nav-right" name="wap-nav" @click="isChannelEditShow= true" />
@@ -45,7 +47,7 @@ export default {
       // 频道列表
       userChannles: [],
       // 弹层
-      isChannelEditShow: true
+      isChannelEditShow: false
     }
   },
   components: {
