@@ -10,7 +10,7 @@ const routes = [
   },
 
   {
-    path: '/',
+    path: '/home',
     component: () => import('../views/tabbar'),
     // 子路由
     children: [
@@ -47,10 +47,10 @@ const routes = [
   // 文章详情页面
   {
     path: '/article/:articleId',
-    component: () => import('@/views/article')
+    component: () => import('@/views/article'),
     // 将路由动态参数映射到组件的 props 中，更推荐这种做法
     // 参考文档：https://router.vuejs.org/zh/guide/essentials/passing-props.html
-    // props: true
+    props: true
   }
 
 ]

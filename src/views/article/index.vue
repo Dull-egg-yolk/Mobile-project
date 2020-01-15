@@ -11,6 +11,7 @@
 
     <!-- 加载中 -->
     <van-loading
+      v-if="loading"
       class="loading"
       color="#1989fa"
       vertical
@@ -20,41 +21,44 @@
     <!-- /加载中 -->
 
     <!-- 文章详情 -->
-    <div class="detail">
-      <h3 class="title">一个合格的中级前端工程师需要掌握的 28 个 JavaScript 技巧</h3>
+    <div class="detail" v-else-if="article.title">
+      <h3 class="title">{{article.title}}</h3>
       <div class="author-wrap">
         <div class="base-info">
           <van-image
             class="avatar"
             round
             fit="cover"
-            src="https://img.yzcdn.cn/vant/cat.jpeg"
+            :src="article.aut_photo"
           />
           <div class="text">
-            <p class="name">黑马头条号</p>
-            <p class="time">4 小时前</p>
+            <p class="name">{{article.aut_name}}</p>
+            <p class="time">{{article.pubdate}}</p>
           </div>
         </div>
-        <van-button class="follow-btn" type="info" size="small" round>+ 关注</van-button>
+        <van-button class="follow-btn"
+
+        v-if="!$store.state.user || article.aut_id !== $store.state.user.id"
+        :type="this.article.is_followed ? 'default': 'info'"
+        size="small"
+        round
+        @click="onAttention"
+        >{{this.article.is_followed ? '已关注' : '关注'}}</van-button>
       </div>
-      <div class="markdown-body">
-        <p>作为战斗在业务一线的前端，要想少加班，就要想办法提高工作效率。这里提一个小点，我们在业务开发过程中，经常会重复用到日期格式化、url参数转对象、浏览器类型判断、节流函数等一类函数，这些工具类函数，基本上在每个项目都会用到，为避免不同项目多次复制粘贴的麻烦，我们可以统一封装，发布到npm，以提高开发效率。</p>
-        <p>使用 Object.prototype.toString 配合闭包，通过传入不同的判断类型来返回不同的判断函数，一行代码，简洁优雅灵活（注意传入 type 参数时首字母大写）</p>
-        <p>使用 Object.prototype.toString 配合闭包，通过传入不同的判断类型来返回不同的判断函数，一行代码，简洁优雅灵活（注意传入 type 参数时首字母大写）</p>
-        <p>使用 Object.prototype.toString 配合闭包，通过传入不同的判断类型来返回不同的判断函数，一行代码，简洁优雅灵活（注意传入 type 参数时首字母大写）</p>
-        <p>使用 Object.prototype.toString 配合闭包，通过传入不同的判断类型来返回不同的判断函数，一行代码，简洁优雅灵活（注意传入 type 参数时首字母大写）</p>
+      <div class="markdown-body" v-html="article.content">
       </div>
     </div>
     <!-- /文章详情 -->
 
      <!-- 加载失败提示 -->
-    <div class="error">
+    <div class="error" v-else>
       <img src="./no-network.png" alt="no-network">
       <p class="text">亲，网络不给力哦~</p>
       <van-button
         class="btn"
         type="default"
         size="small"
+        @click="loadArticle()"
       >点击重试</van-button>
     </div>
     <!-- /加载失败提示 -->
@@ -74,11 +78,13 @@
       />
       <van-icon
         color="orange"
-        name="star"
+        :name="article.is_collected ? 'star' : 'star-o'"
+        @click="onCollect"
       />
       <van-icon
         color="#e5645f"
-        name="good-job"
+        :name="article.attitude===1? 'good-job' : 'good-job-o'"
+        @click="onLikings"
       />
       <van-icon class="share-icon" name="share" />
     </div>
@@ -88,8 +94,96 @@
 </template>
 
 <script>
-export default {
+import { getArticleById, addCollect, deleteCollect, articleLikings, delArticleLikings } from '../../api/article'
 
+import { userFollwings, delUserFollwings } from '../../api/user'
+export default {
+  props: {
+    articleId: {
+      type: String,
+      required: true
+    }
+  },
+  data () {
+    return {
+      article: {}, // 文章详情
+      loading: true // 文章加载中的 loading 状态
+    }
+  },
+  created () {
+    this.loadArticle()
+  },
+  methods: {
+    async loadArticle () {
+      this.loading = true
+      try {
+        const { data } = await getArticleById(this.articleId)
+        // JSON.parse('oo')
+        console.log(data)
+        this.article = data.data
+      } catch (err) {
+        console.log(err)
+      }
+      this.loading = false
+    },
+    //   收藏
+    async onCollect () {
+      this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        message: '操作中...',
+        forbidClick: true // 是否禁止背景点击
+      })
+      try {
+      // 如果已收藏
+        if (this.article.is_collected) {
+          await deleteCollect(this.articleId)
+          this.article.is_collected = false
+          this.$toast.success('取消收藏')
+        //   未收藏
+        } else {
+          await addCollect(this.articleId)
+          this.article.is_collected = true
+          this.$toast.success('收藏成功')
+        }
+      } catch (err) {
+        this.$toast.fail('操作失败')
+      }
+    },
+    // 文章点赞
+    async onLikings () {
+      try {
+        // 如果文章点赞状态 则取消点赞
+        if (this.article.attitude === 1) {
+          await delArticleLikings(this.articleId)
+          this.article.attitude = 0
+          this.$toast.success('取消点赞')
+        } else {
+        //   文章处于未点赞状态
+          await articleLikings(this.articleId)
+          this.article.attitude = 1
+          this.$toast.success('点赞成功')
+        }
+      } catch (err) {
+        this.$toast.fail('操作失败')
+      }
+    },
+    // 关注作者
+    async onAttention () {
+      try {
+        //   作者id
+        const userId = this.article.aut_id
+        //   如果已经关注作者
+        if (this.article.is_followed) {
+          await delUserFollwings(userId)
+        } else {
+          await userFollwings(userId)
+        }
+        this.article.is_followed = !this.article.is_followed
+      } catch (err) {
+
+      }
+    }
+  }
 }
 </script>
 

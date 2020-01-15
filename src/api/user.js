@@ -31,3 +31,23 @@ export const getUserbyId = (userId) => {
     method: 'GET'
   })
 }
+
+// 关注作者
+
+export const userFollwings = userId => {
+  return request({
+    method: 'POST',
+    url: '/v1_0/user/followings',
+    data: {
+      target: userId
+    }
+  })
+}
+
+// 取消关注作者
+export const delUserFollwings = userId => {
+  return request({
+    method: 'DELETE',
+    url: `/v1_0/article/likings/${userId}`
+  })
+}
